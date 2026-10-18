@@ -2,14 +2,9 @@
 
 **100 simulated cars teach themselves to drive: a neural network and evolution, written from scratch in plain JavaScript.**
 
-> Built for AgentVerse 2026 (Robotics track).
+**▶ Live demo:** https://autopilot-one-iota.vercel.app
 
-**▶ Live demo:** `https://YOUR-PROJECT.vercel.app` *(replace with your Vercel link)*
-
-![Demo GIF](demo.gif)
-*(Record a short screen capture, save it as `demo.gif` in this folder, and it will show up here.)*
-
----
+https://github.com/user-attachments/assets/de0f70c0-36ed-484e-b652-33bd68b68beb
 
 ## What is this?
 
