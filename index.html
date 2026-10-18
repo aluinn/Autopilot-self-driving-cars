@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Autopilot — cars that teach themselves to drive</title>
+  <meta name="description" content="100 simulated cars learn to drive with a neural network and a genetic algorithm. Watch them evolve, draw your own track, and look inside their brains.">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:title" content="Autopilot — cars that teach themselves to drive">
+  <meta property="og:description" content="100 simulated cars learn to drive using a neural network and evolution. Built from scratch in plain JavaScript.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23000'/%3E%3Crect x='11' y='6' width='10' height='20' rx='3' fill='%23a855f7'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top bar: wordmark left, one action right -->
+  <nav class="nav">
+    <span class="wordmark">AUTOPILOT</span>
+    <div class="nav-actions">
+      <button id="howBtn" class="btn">How it works</button>
+      <button id="demoBtn" class="btn solid"><span class="long">Watch a trained driver</span><span class="short">Demo</span></button>
+    </div>
+  </nav>
+
+  <!-- Hero: big headline, then the track as the star of the page -->
+  <header class="hero">
+    <h1>Cars that teach<br>themselves to drive</h1>
+    <p class="sub">Nobody is steering. 100 cars crash, copy the best, mutate, and repeat.</p>
+  </header>
+
+  <section class="stage">
+    <canvas id="trackCanvas" width="1000" height="700"></canvas>
+    <p class="narrator"><span class="tag">LIVE</span><span id="narratorText"></span></p>
+    <!-- On-screen arrows for phones/tablets; shown only in manual drive -->
+    <div class="dpad" id="dpad" hidden aria-label="Driving controls">
+      <button data-drive="left" aria-label="Steer left">◀</button>
+      <button data-drive="forward" aria-label="Accelerate">▲</button>
+      <button data-drive="reverse" aria-label="Reverse">▼</button>
+      <button data-drive="right" aria-label="Steer right">▶</button>
+    </div>
+    <ul class="legend">
+      <li><i class="dot best"></i>Leader</li>
+      <li><i class="dot crowd"></i>The pack</li>
+      <li><i class="dot crashed"></i>Wrecks</li>
+    </ul>
+  </section>
+
+  <!-- Big numbers with small captions -->
+  <section class="specs">
+    <div><b id="genCount">1</b><span>Generation</span></div>
+    <div><b id="aliveCount">–</b><span>Still driving</span></div>
+    <div><b id="bestFitness">0</b><span>Top score</span></div>
+    <div><b id="bestLaps">0</b><span>Record laps</span></div>
+  </section>
+
+  <!-- Controls and visuals, laid out as plain columns -->
+  <section class="lab">
+    <div class="col">
+      <h2>Track</h2>
+      <select id="trackSelect" aria-label="Choose a track">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+      </select>
+      <button id="editBtn" class="btn wide">Draw your own track</button>
+      <label class="toggle small">
+        <input type="checkbox" id="keepBrains"> Keep brains when the track changes
+        <span class="tip" tabindex="0" role="note" aria-label="Help"
+          data-tip="Off: every new track starts learning from scratch. On: the current drivers are dropped onto the new track as they are, so you can see whether what they learned works somewhere new. That's called generalising.">?</span>
+      </label>
+
+      <h2 class="spaced">Training</h2>
+      <p class="label">Time machine</p>
+      <div class="seg">
+        <button data-speed="1" class="active">1x</button>
+        <button data-speed="5">5x</button>
+        <button data-speed="20">20x</button>
+      </div>
+      <p class="label">Mutation <b id="mutationLabel">10%</b></p>
+      <input type="range" id="mutationSlider" min="0" max="50" value="10">
+      <p class="note">How much children differ from their parents.</p>
+      <label class="toggle"><input type="checkbox" id="manualToggle"> Take the wheel <span class="muted">(arrow keys)</span></label>
+      <button id="resetBtn" class="btn">Reset learning</button>
+
+      <h2 class="spaced">Brains</h2>
+      <div class="btn-row">
+        <button id="saveBtn" class="btn">Save</button>
+        <button id="loadBtn" class="btn">Load</button>
+        <button id="exportBtn" class="btn">Export</button>
+      </div>
+      <p class="note" id="status" aria-live="polite"></p>
+    </div>
+
+    <div class="col">
+      <h2>Learning curve</h2>
+      <canvas id="chart" width="520" height="220"></canvas>
+      <p class="note">Top score of each generation.</p>
+
+      <h2 class="spaced">What the leader sees</h2>
+      <p class="note">0 = open road, 1 = wall in its face.</p>
+      <div id="sensorReadout"></div>
+    </div>
+
+    <div class="col">
+      <h2>Inside the leader's mind</h2>
+      <canvas id="brainCanvas" width="520" height="340"></canvas>
+      <p class="note">Purple links say “do it”, white links say “don’t”. Brighter neurons are thinking harder.</p>
+    </div>
+  </section>
+
+  <!-- "How it works" pop-up -->
+  <dialog id="howDialog" aria-labelledby="howTitle">
+    <button id="howClose" class="close" aria-label="Close">✕</button>
+    <h2 id="howTitle">How it works</h2>
+    <ol class="steps">
+      <li><b>Sense</b> Each car fires five invisible sensor beams, like a simple lidar, and measures how close the nearest wall is in each direction.</li>
+      <li><b>Think</b> Those five readings, plus the car's speed, go into a tiny neural network: 70 adjustable numbers that decide whether to accelerate, brake, or steer left or right.</li>
+      <li><b>Score</b> At first every brain is random, so nearly every car crashes. Each car is scored on how many checkpoints it passes before it crashes, gets stuck, or turns round.</li>
+      <li><b>Evolve</b> The best brains become parents. They are copied, mixed together and randomly nudged to make the next generation. Nobody writes driving rules; trial, error and selection do the work.</li>
+    </ol>
+    <p class="real"><b>In the real world</b> Companies building self-driving cars and robots do the same in spirit: they train and test in simulation first, using tools like NVIDIA's simulators, so the software can fail millions of times safely before it ever meets a real road. Real systems use far larger neural networks fed by cameras, radar and lidar, and mostly learn from data rather than evolution, but the idea of learning by driving in a virtual world is the same.</p>
+  </dialog>
+
+  <!-- Order matters: later files use things defined in earlier ones -->
+  <script src="theme.js"></script>
+  <script src="utils.js"></script>
+  <script src="track.js"></script>
+  <script src="tracks.js"></script>
+  <script src="sensor.js"></script>
+  <script src="network.js"></script>
+  <script src="car.js"></script>
+  <script src="evolution.js"></script>
+  <script src="chart.js"></script>
+  <script src="brainvis.js"></script>
+  <script src="editor.js"></script>
+  <script src="demo.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
