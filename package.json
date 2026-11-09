@@ -7,10 +7,10 @@
   "author": "Aluinn McDonald",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aluinn/autopilot.git"
+    "url": "git+https://github.com/aluinn/Autopilot-self-driving-cars.git"
   },
   "bugs": {
-    "url": "https://github.com/aluinn/autopilot/issues"
+    "url": "https://github.com/aluinn/Autopilot-self-driving-cars/issues"
   },
   "homepage": "https://autopilot-one-iota.vercel.app",
   "keywords": [

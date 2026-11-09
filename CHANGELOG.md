@@ -23,5 +23,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pre-trained demo brain and `tools/train-demo.js` to regenerate it.
 - Save, load and export of brains.
 
-[Unreleased]: https://github.com/aluinn/autopilot/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/aluinn/autopilot/releases/tag/v1.0.0
+[Unreleased]: https://github.com/aluinn/Autopilot-self-driving-cars/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/aluinn/Autopilot-self-driving-cars/releases/tag/v1.0.0

@@ -61,7 +61,7 @@ representative at an online or offline event.
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement by opening a
 private report through GitHub:
-<https://github.com/aluinn/autopilot/security/advisories/new>
+<https://github.com/aluinn/Autopilot-self-driving-cars/security/advisories/new>
 (please say in the title that it is a Code of Conduct report). Only the
 maintainers can see it. All complaints will be reviewed and investigated
 promptly and fairly.

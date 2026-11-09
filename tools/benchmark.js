@@ -64,6 +64,15 @@ function msPerStep(track, kind, steps = 600) {
     }
   }
 
+  // What does the spatial grid in track.js buy? Compare with testing every wall segment.
+  {
+    const track = A.buildTrack(A.PRESETS.medium.points);
+    const brute = Object.assign({}, track, { query: () => track.walls });
+    const grid = median(Array.from({ length: 5 }, () => msPerStep(track, "demo").msPerStep));
+    const all = median(Array.from({ length: 5 }, () => msPerStep(brute, "demo").msPerStep));
+    console.log(`\nWall lookup, Medium track, demo brains: grid = ${fmt(grid, 3)} ms/step, every segment = ${fmt(all, 3)} ms/step (${fmt(all / grid, 1)}x slower)`);
+  }
+
   const cars = Array.from({ length: 100 }, (_, i) => ({ brain: new A.NeuralNetwork([6, 6, 4]), fitness: i }));
   const t0 = process.hrtime.bigint();
   for (let i = 0; i < 1000; i++) A.nextGeneration(cars, 100, 0.1);

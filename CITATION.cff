@@ -8,8 +8,8 @@ type: software
 authors:
   - family-names: McDonald
     given-names: Aluinn
-repository-code: "https://github.com/aluinn/autopilot"
-url: "https://github.com/aluinn/autopilot"
+repository-code: "https://github.com/aluinn/Autopilot-self-driving-cars"
+url: "https://github.com/aluinn/Autopilot-self-driving-cars"
 license: MIT
 version: 1.0.0
 date-released: "2026-10-18"

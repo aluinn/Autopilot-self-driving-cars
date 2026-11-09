@@ -5,7 +5,7 @@
 Please **do not open a public issue** for a security problem. Use GitHub's private reporting instead:
 
 1. Go to the repository's **Security** tab.
-2. Click **Report a vulnerability** (or open <https://github.com/aluinn/autopilot/security/advisories/new>).
+2. Click **Report a vulnerability** (or open <https://github.com/aluinn/Autopilot-self-driving-cars/security/advisories/new>).
 3. Describe what you found and how to reproduce it.
 
 You can expect an acknowledgement within a week. This is a hobby-scale project, so there is no bounty and no SLA, but real reports will be looked at and credited if you wish.

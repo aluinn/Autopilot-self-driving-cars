@@ -4,11 +4,11 @@
 
 **100 simulated cars teach themselves to drive: a neural network and evolution, written from scratch in plain JavaScript.**
 
-[![CI](https://github.com/aluinn/autopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/aluinn/autopilot/actions/workflows/ci.yml)
-[![CodeQL](https://github.com/aluinn/autopilot/actions/workflows/codeql.yml/badge.svg)](https://github.com/aluinn/autopilot/actions/workflows/codeql.yml)
+[![CI](https://github.com/aluinn/Autopilot-self-driving-cars/actions/workflows/ci.yml/badge.svg)](https://github.com/aluinn/Autopilot-self-driving-cars/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/aluinn/Autopilot-self-driving-cars/actions/workflows/codeql.yml/badge.svg)](https://github.com/aluinn/Autopilot-self-driving-cars/actions/workflows/codeql.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-a855f7.svg)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/aluinn/autopilot?style=flat&color=a855f7)](https://github.com/aluinn/autopilot/stargazers)
-[![Deploy with Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/autopilot)
+[![GitHub stars](https://img.shields.io/github/stars/aluinn/Autopilot-self-driving-cars?style=flat&color=a855f7)](https://github.com/aluinn/Autopilot-self-driving-cars/stargazers)
+[![Deploy with Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/Autopilot-self-driving-cars)
 
 https://github.com/user-attachments/assets/de0f70c0-36ed-484e-b652-33bd68b68beb
 
@@ -80,8 +80,8 @@ The longer version, with sequence diagrams and a failure-modes table, is in [doc
 There is nothing to install to run the app. It is a static site.
 
 ```bash
-git clone https://github.com/aluinn/autopilot.git
-cd autopilot
+git clone https://github.com/aluinn/Autopilot-self-driving-cars.git
+cd Autopilot-self-driving-cars
 python3 -m http.server 8000   # any static file server works
 # then open http://localhost:8000
 ```
@@ -104,7 +104,7 @@ Or open the folder in VS Code and use the **Live Server** extension on `index.ht
 
 It is a static site with no build command, so any static host works.
 
-- **Vercel:** [one-click deploy](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/autopilot). Framework preset "Other", no build command, output directory left blank.
+- **Vercel:** [one-click deploy](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/Autopilot-self-driving-cars). Framework preset "Other", no build command, output directory left blank.
 - **Netlify / GitHub Pages / Cloudflare Pages:** publish the repository root as-is.
 
 ## FAQ

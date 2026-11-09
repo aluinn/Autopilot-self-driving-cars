@@ -16,8 +16,8 @@ By taking part you agree to follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 You need **Node.js 20 or newer** (for the tests and tools). The app itself needs no install.
 
 ```bash
-git clone https://github.com/<your-username>/autopilot.git
-cd autopilot
+git clone https://github.com/<your-username>/Autopilot-self-driving-cars.git
+cd Autopilot-self-driving-cars
 npm install            # only dev dependency: Playwright (screenshots, e2e)
 npm start              # serves the app at http://localhost:8000
 ```
