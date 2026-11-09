@@ -10,21 +10,13 @@
 [![GitHub stars](https://img.shields.io/github/stars/aluinn/autopilot?style=flat&color=a855f7)](https://github.com/aluinn/autopilot/stargazers)
 [![Deploy with Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/autopilot)
 
-<!--
-  HERO PLACEHOLDER: record a 10-20 second screen capture (generation 1 crashing, then the
-  demo driver doing laps), save it as docs/assets/demo.gif (or .mp4), and replace the
-  image below with:  <img src="docs/assets/demo.gif" alt="Autopilot demo" width="760">
-  Until then this is a real screenshot of the running app.
--->
-<img src="docs/assets/shot-demo-driving.png" alt="Autopilot: a leading car with its sensor rays on the Medium track" width="760">
+https://github.com/user-attachments/assets/de0f70c0-36ed-484e-b652-33bd68b68beb
 
 [Deploy](#deploy) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
 
-<!-- LIVE DEMO: add your URL here once deployed:  **[▶ Live demo](https://your-url)** -->
+**[▶ Live demo](https://autopilot-one-iota.vercel.app)**
 
 </div>
-
-> Built for AgentVerse 2026 (Robotics track).
 
 ## Features
 
@@ -157,7 +149,7 @@ See [ROADMAP.md](ROADMAP.md).
 
 ## Credits
 
-- Built by **Aluinn McDonald** for AgentVerse 2026 (Robotics track).
+- Built by **Aluinn McDonald**.
 - Font: [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (SIL Open Font License), served by Google Fonts.
 - Track curves use a [Catmull-Rom spline](https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline).
 - Screenshots are captured with [Playwright](https://playwright.dev/).
