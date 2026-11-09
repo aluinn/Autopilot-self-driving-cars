@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Autopilot: cars that teach themselves to drive"
+abstract: >-
+  100 simulated cars learn to drive with a hand-written neural network and
+  genetic algorithm, in plain JavaScript with no libraries or build step.
+type: software
+authors:
+  - family-names: McDonald
+    given-names: Aluinn
+repository-code: "https://github.com/aluinn/autopilot"
+url: "https://github.com/aluinn/autopilot"
+license: MIT
+version: 1.0.0
+date-released: "2026-10-18"
+keywords:
+  - neuroevolution
+  - genetic algorithm
+  - neural network
+  - self-driving
+  - simulation
