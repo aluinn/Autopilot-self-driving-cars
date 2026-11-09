@@ -1,105 +1,162 @@
+<div align="center">
+
 # Autopilot
 
 **100 simulated cars teach themselves to drive: a neural network and evolution, written from scratch in plain JavaScript.**
 
+[![CI](https://github.com/aluinn/autopilot/actions/workflows/ci.yml/badge.svg)](https://github.com/aluinn/autopilot/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/aluinn/autopilot/actions/workflows/codeql.yml/badge.svg)](https://github.com/aluinn/autopilot/actions/workflows/codeql.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-a855f7.svg)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/aluinn/autopilot?style=flat&color=a855f7)](https://github.com/aluinn/autopilot/stargazers)
+[![Deploy with Vercel](https://img.shields.io/badge/deploy-Vercel-000000?logo=vercel)](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/autopilot)
+
+<!--
+  HERO PLACEHOLDER: record a 10-20 second screen capture (generation 1 crashing, then the
+  demo driver doing laps), save it as docs/assets/demo.gif (or .mp4), and replace the
+  image below with:  <img src="docs/assets/demo.gif" alt="Autopilot demo" width="760">
+  Until then this is a real screenshot of the running app.
+-->
+<img src="docs/assets/shot-demo-driving.png" alt="Autopilot: a leading car with its sensor rays on the Medium track" width="760">
+
+[Deploy](#deploy) · [Architecture](docs/ARCHITECTURE.md) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
+
+<!-- LIVE DEMO: add your URL here once deployed:  **[▶ Live demo](https://your-url)** -->
+
+</div>
+
 > Built for AgentVerse 2026 (Robotics track).
 
-**▶ Live demo:** `https://YOUR-PROJECT.vercel.app` *(replace with your Vercel link)*
+## Features
 
-![Demo GIF](demo.gif)
-*(Record a short screen capture, save it as `demo.gif` in this folder, and it will show up here.)*
+- **Neuroevolution from scratch.** A feed-forward neural network (6 → 6 → 4, 70 weights and biases) and a genetic algorithm, with no ML library, framework or build step.
+- **100 cars per generation** that crash, get scored, and breed: elitism (top 5 kept), fitness-weighted selection from the top quarter, crossover and mutation.
+- **Lidar-style sensing.** Five rays across about 120° measure the distance to the nearest wall using line-segment intersection.
+- **Three preset tracks** (Easy, Medium, Hard) **and draw-your-own**: sketch a loop with a mouse or finger and walls and checkpoints are generated, with friendly messages if the track is unusable (too small, too tight, crossing itself).
+- **Generalisation test.** Tick "Keep brains when the track changes" to drop the current drivers onto a new road and see whether what they learned transfers.
+- **Look inside the brain.** A live learning curve, the leader's five sensor readings, and a network diagram where neurons and links light up as they fire.
+- **Time machine.** Run 1×, 5× or 20× simulation steps per frame, and tune the mutation rate from 0% to 50%.
+- **Take the wheel.** Drive a car yourself with the arrow keys (on-screen arrows on touch devices).
+- **Pre-trained demo driver**, trained across all three presets by [`tools/train-demo.js`](tools/train-demo.js).
+- **Save, load and export brains** to browser storage or a JSON file.
+- **Responsive**, with a phone layout.
 
----
+## Screenshots
 
-## What is this?
+<table>
+  <tr>
+    <td><img src="docs/assets/shot-gen1-chaos.png" alt="Generation 1: random brains crashing"><br><sub><b>Generation 1:</b> random brains, mostly crashing</sub></td>
+    <td><img src="docs/assets/shot-demo-driving.png" alt="The pre-trained demo driver"><br><sub><b>The demo driver:</b> a trained brain completing laps</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/assets/shot-draw-track.png" alt="Drawing a custom track"><br><sub><b>Draw your own track:</b> one stroke, the old track faintly behind</sub></td>
+    <td><img src="docs/assets/shot-custom-track.png" alt="Demo brains on a track the user drew"><br><sub><b>Generalising:</b> the same drivers on the track you drew</sub></td>
+  </tr>
+</table>
 
-A 2D race track is drawn on a canvas and 100 cars drive on it. Nobody programs how to drive. Each car has a tiny neural network for a brain, and at the start those brains are random, so nearly every car crashes. After each generation, the best cars are copied, mixed and slightly mutated to make the next batch. Within a few generations, cars are completing laps.
+<details>
+<summary>More screenshots</summary>
 
-There are no libraries, no frameworks, no build step and no backend. Everything, including the neural network and the genetic algorithm, is written by hand.
+| | |
+|---|---|
+| <img src="docs/assets/shot-hard-track.png" alt="Hard track"><br><sub>The Hard track (S-bends and a hairpin)</sub> | <img src="docs/assets/shot-how-it-works.png" alt="How it works dialog"><br><sub>The built-in "How it works" pop-up</sub> |
+| <img src="docs/assets/shot-evolving.png" alt="Full page while evolving from scratch"><br><sub>Evolving from scratch: generation 5 in this capture, first lap done, with the lab panels below</sub> | <img src="docs/assets/shot-phone.png" alt="Phone layout" width="300"><br><sub>Phone layout (390×844)</sub> |
+
+</details>
 
 ## How it works
 
-**1. Sensing.** Each car fires 5 invisible rays across about 120° in front of it. Each ray finds the nearest wall (line-segment intersection maths) and returns a number from 0 (nothing in range) to 1 (wall touching). It is a simple version of what lidar does on a real vehicle.
-
-**2. Thinking (the neural network).** The 5 sensor readings plus the car's current speed go into a small feed-forward neural network:
-
+```mermaid
+flowchart LR
+    S["Sensors<br/>5 rays"] --> N["Neural network<br/>6 → 6 → 4"]
+    N --> C["Controls<br/>fwd / rev / left / right"]
+    C --> P["Car physics<br/>+ crash checks"]
+    P --> F["Fitness<br/>checkpoints passed"]
+    F --> E["Evolution<br/>select, cross, mutate"]
+    E -. "next generation" .-> N
+    P --> S
 ```
-6 inputs  →  6 hidden neurons  →  4 outputs (forward, reverse, left, right)
+
+1. **Sensing.** Each car fires 5 rays across about 120° ([`sensor.js`](sensor.js)). Each returns 0 (nothing within 150 px) to 1 (wall touching).
+2. **Thinking.** The 5 readings plus the car's speed feed the network ([`network.js`](network.js)). Every output above zero presses a key: forward, reverse, left, right. The 70 weights and biases are the car's entire personality.
+3. **Scoring.** Fitness is checkpoints passed (across laps), plus progress to the next one, plus a small speed bonus ([`car.js`](car.js)). A car is retired if it hits a wall, crosses the previous checkpoint backwards, or goes about 3 seconds without a new checkpoint.
+4. **Evolving.** When everyone has stopped or 2400 ticks have passed, the top 5 brains are copied unchanged, and the rest of the next generation is bred from the top quarter ([`evolution.js`](evolution.js)). Repeat.
+
+The longer version, with sequence diagrams and a failure-modes table, is in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Quick start
+
+There is nothing to install to run the app. It is a static site.
+
+```bash
+git clone https://github.com/aluinn/autopilot.git
+cd autopilot
+python3 -m http.server 8000   # any static file server works
+# then open http://localhost:8000
 ```
 
-Every connection has a *weight* and every neuron has a *bias*: 70 numbers in total. These numbers are the car's whole personality. An output above zero means "press that key".
+Or open the folder in VS Code and use the **Live Server** extension on `index.html`.
 
-**3. Scoring (fitness).** A car's score is the number of checkpoints it has passed (across laps), with progress towards the next checkpoint as a tiebreaker and a small bonus for speed. Cars are removed if they crash, go backwards, or fail to reach a new checkpoint for about 3 seconds.
-
-**4. Evolution (the genetic algorithm).** When a generation ends:
-
-- the **top 5** brains are copied unchanged (*elitism*),
-- other brains are chosen from the top quarter, with fitter cars more likely to be picked (*selection*),
-- half the children mix two parents' weights (*crossover*),
-- every child gets a few random nudges (*mutation*, set by the slider).
-
-Repeat, and the average driver improves.
-
-### How this relates to real autonomous vehicles
-
-Companies building self-driving cars and robots train and test in simulation first, using tools such as NVIDIA's simulators, so software can fail millions of times safely before it meets a real road. Real systems use much larger neural networks fed by cameras, radar and lidar, and mostly learn from data and reinforcement learning rather than evolution, but the core idea is the same: let software learn by driving in a virtual world.
-
-## Controls
-
-| Control | What it does |
+| Command | What it does |
 |---|---|
-| **Time machine** (1x / 5x / 20x) | Run several simulation steps per frame to fast-forward learning |
-| **Mutation slider** | How many of a child's weights get nudged (0% = clones, 50% = chaos) |
-| **Track dropdown** | Easy, Medium or Hard preset (or "Your track") |
-| **Draw your own track** | Draw a closed loop with mouse or finger; walls and checkpoints are generated automatically |
-| **Keep brains when the track changes** | Off: learning restarts. On: the current drivers are dropped on the new track to test whether they generalise |
-| **Take the wheel** | Drive one car yourself with the arrow keys (on-screen arrows on touch devices) |
-| **Reset learning** | Start again from random brains |
-| **Watch a trained driver** | Load the pre-trained demo brain |
-| **Save / Load** | Store the best brain in your browser (localStorage) and bring it back |
-| **Export** | Download the best brain as a JSON file |
-| **How it works** | Short explanation pop-up |
+| `python3 -m http.server 8000` | Serve the app locally |
+| `node tools/train-demo.js` | Re-train the demo brain (headless, rewrites `demo.js`) |
+| `npm install && node tools/screenshots.js` | Regenerate the screenshots in `docs/assets/` (needs Playwright) |
 
-## Run it locally
+## Deploy
 
-No install needed.
+It is a static site with no build command, so any static host works.
 
-1. Open the folder in **VS Code**.
-2. Install the **Live Server** extension.
-3. Right-click `index.html` → **Open with Live Server**.
+- **Vercel:** [one-click deploy](https://vercel.com/new/clone?repository-url=https://github.com/aluinn/autopilot). Framework preset "Other", no build command, output directory left blank.
+- **Netlify / GitHub Pages / Cloudflare Pages:** publish the repository root as-is.
 
-Any static file server works too, for example `python3 -m http.server` in this folder, then open `http://localhost:8000`.
+## FAQ
 
-## Project structure
+**Is this reinforcement learning?**
+No. It is neuroevolution: there is no gradient, no backpropagation and no reward signal during a drive. Brains are scored after the fact and selected.
 
-| File | Job |
+**How long does it take to learn?** It varies a lot, because everything starts random. In two headless runs on the Medium track at 20×, the first car completed a lap at generation 5 in one run and generation 22 in the other. A single run proves nothing, so treat these as a feel for the range, not a benchmark.
+
+**Why does the demo driver sometimes crash on a track I drew?**
+It was trained only on the three presets ([`tools/train-demo.js`](tools/train-demo.js)). It generalises to some drawn tracks and not others, which is the point of the "Keep brains" experiment.
+
+**Are runs reproducible?**
+No. Initial weights, selection, crossover and mutation all use `Math.random()`. A seeded generator is a [good idea for an issue](docs/issues/06-seeded-rng.md).
+
+**Does it work offline?**
+Almost. The page loads the Space Grotesk font from Google Fonts; without network it falls back to a default font and everything else still works.
+
+**Does it use a lot of CPU?**
+At 20× the page runs 20 simulation steps per frame on the main thread, which can drop the frame rate on slow machines. I haven't profiled it, and moving the simulation to a Web Worker is an [open idea](docs/issues/09-web-worker-training.md).
+
+**Is the "real world" comparison fair?**
+It is a metaphor. Real self-driving stacks use far larger models, camera/radar/lidar and mostly learn from data. This project is a teaching toy.
+
+## Good first issues
+
+Drafts live in [`docs/issues/`](docs/issues) (copy one into a new GitHub issue).
+
+| Issue | Where to look |
 |---|---|
-| `index.html`, `style.css` | The page and its look |
-| `theme.js` | Every canvas colour in one place |
-| `utils.js` | Line-segment intersection and small maths helpers |
-| `track.js` | Builds walls and checkpoints from a centre line; checks a track is usable |
-| `tracks.js` | The three preset tracks |
-| `editor.js` | Draw-your-own-track tool |
-| `sensor.js` | The car's rays |
-| `network.js` | The neural network (forward pass, clone, mutate, crossover, save/load) |
-| `car.js` | Car physics, collisions, checkpoints and fitness |
-| `evolution.js` | The genetic algorithm |
-| `chart.js`, `brainvis.js` | The learning-curve chart and live brain visualiser |
-| `demo.js` | The pre-trained brain (generated) |
-| `main.js` | Game loop, generations, buttons |
-| `tools/train-demo.js` | Re-trains the demo brain on your computer: `node tools/train-demo.js` |
+| [Narrator says "pure chaos" after loading a trained brain](docs/issues/01-narrator-after-demo.md) | `main.js` |
+| [Import a brain from a JSON file](docs/issues/02-import-brain-json.md) | `main.js`, `index.html` |
+| [Add a pause button](docs/issues/03-pause-button.md) | `main.js`, `index.html` |
+| [Self-host the Space Grotesk font](docs/issues/04-self-host-font.md) | `index.html`, `style.css` |
+| [Remember the track you drew](docs/issues/05-persist-custom-track.md) | `main.js` |
 
-## Ideas for future work
+More in [docs/issues/](docs/issues) (enhancements such as seeded runs, shareable track links and a Web Worker).
 
-- Give cars a camera-like view (more rays, or a coarse image) and a deeper network.
-- Add traffic, other cars and moving obstacles.
-- Reward smoother driving and penalise jerky steering.
-- Try other learning methods (NEAT, reinforcement learning) and compare them.
-- Evolve the sensor layout itself: how many rays, and at what angles.
-- Train on many randomly generated tracks so the final brain generalises everywhere.
-- Add speed limits, junctions and traffic lights.
-- Share brains and tracks through a link.
+## Roadmap
 
-## Deploying
+See [ROADMAP.md](ROADMAP.md).
 
-This is a static site: deploy the folder as-is to Vercel, Netlify or GitHub Pages. No build command is needed.
+## Credits
+
+- Built by **Aluinn McDonald** for AgentVerse 2026 (Robotics track).
+- Font: [Space Grotesk](https://fonts.google.com/specimen/Space+Grotesk) (SIL Open Font License), served by Google Fonts.
+- Track curves use a [Catmull-Rom spline](https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline).
+- Screenshots are captured with [Playwright](https://playwright.dev/).
+- No runtime libraries: the neural network, genetic algorithm, physics and charts are hand-written.
+
+## License
+
+[MIT](LICENSE) © Aluinn McDonald
