@@ -1,0 +1,32 @@
+{
+  "name": "autopilot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "100 simulated cars teach themselves to drive with a neural network and a genetic algorithm, written from scratch in plain JavaScript.",
+  "license": "MIT",
+  "author": "Aluinn McDonald",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aluinn/autopilot.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aluinn/autopilot/issues"
+  },
+  "homepage": "https://github.com/aluinn/autopilot#readme",
+  "keywords": [
+    "neural-network",
+    "genetic-algorithm",
+    "neuroevolution",
+    "self-driving",
+    "canvas",
+    "simulation",
+    "vanilla-js"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {},
+  "devDependencies": {
+    "playwright": "^1.65.0"
+  }
+}
