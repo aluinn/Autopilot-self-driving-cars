@@ -98,9 +98,15 @@ Or open the folder in VS Code and use the **Live Server** extension on `index.ht
 
 | Command | What it does |
 |---|---|
-| `python3 -m http.server 8000` | Serve the app locally |
-| `node tools/train-demo.js` | Re-train the demo brain (headless, rewrites `demo.js`) |
-| `npm install && node tools/screenshots.js` | Regenerate the screenshots in `docs/assets/` (needs Playwright) |
+| `npm start` | Serve the app at `http://localhost:8000` (no dependencies; `python3 -m http.server` works too) |
+| `npm run lint` | Syntax, whitespace and `index.html` reference checks |
+| `npm test` | Unit tests (Node's built-in runner) |
+| `npm run e2e` | End-to-end smoke test in a real browser (`npx playwright install chromium` once) |
+| `npm run bench` | Simulation benchmark, see [docs/PERFORMANCE.md](docs/PERFORMANCE.md) |
+| `npm run train-demo` | Re-train the demo brain (headless, rewrites `demo.js`) |
+| `npm run screenshots` | Regenerate the screenshots in `docs/assets/` |
+
+`npm run e2e` and `npm run screenshots` (and the browser half of `npm run bench`) need `npm install`; Playwright is the only dev dependency. The rest run on plain Node 20+.
 
 ## Deploy
 
