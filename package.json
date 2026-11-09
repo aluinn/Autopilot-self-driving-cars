@@ -25,7 +25,15 @@
   "engines": {
     "node": ">=20"
   },
-  "scripts": {},
+  "scripts": {
+    "start": "node tools/serve.js",
+    "lint": "node tools/lint.js",
+    "test": "node --test test/core.test.js",
+    "e2e": "node --test test/e2e.test.js",
+    "bench": "node tools/benchmark.js",
+    "train-demo": "node tools/train-demo.js",
+    "screenshots": "node tools/screenshots.js"
+  },
   "devDependencies": {
     "playwright": "^1.65.0"
   }

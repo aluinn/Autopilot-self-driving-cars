@@ -3,21 +3,13 @@
 // Output goes to docs/assets/shot-*.png. Uses installed Chrome if present,
 // otherwise Playwright's bundled Chromium.
 
-const http = require("http");
-const fs = require("fs");
 const path = require("path");
 const { chromium } = require("playwright");
+const { createServer } = require("./serve");
 
 const root = path.join(__dirname, "..");
 const outDir = path.join(root, "docs", "assets");
-const types = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css" };
-
-const server = http.createServer((req, res) => {
-  const file = path.join(root, req.url === "/" ? "index.html" : decodeURIComponent(req.url.split("?")[0]));
-  if (!file.startsWith(root) || !fs.existsSync(file) || fs.statSync(file).isDirectory()) { res.writeHead(404); return res.end(); }
-  res.writeHead(200, { "content-type": types[path.extname(file)] || "application/octet-stream" });
-  fs.createReadStream(file).pipe(res);
-});
+const server = createServer();
 
 async function launch() {
   try { return await chromium.launch({ channel: "chrome" }); } catch { return await chromium.launch(); }
